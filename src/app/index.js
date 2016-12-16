@@ -15,6 +15,8 @@ const initialState = {
   counter: 1
 }
 
+let globalSubjectState // eslint-disable-line
+
 const render = (state=initialState) => {
   ReactDOM.render(
     <AppContainer>
@@ -34,6 +36,11 @@ const additionalReducers = {
       // do additional stuff for INC_COUNTER_TIMER
       return { ...state, additional: 'here I am' }
     }
+  ],
+  FROM_THUNK: [
+    (state, payload) => {
+      return { ...state, from_thunk: 'success' }
+    }
   ]
 }
 
@@ -52,13 +59,17 @@ export const actions = {
 }
 
 const reducer = (state, action) => {
-  const { type, payload } = action
-  if (!actions[type]) {
-    return state
+  if (typeof action === 'function') {
+    action(rootSubject.next.bind(rootSubject), _getState)
+    return { ...state }
   }
 
+  const { type, payload } = action
+
   let reducers = []
-  reducers.push(actions[type][1])
+  if (actions[type]) {
+    reducers.push(actions[type][1])
+  }
 
   const additional = additionalReducers[type] || []
 
@@ -78,10 +89,20 @@ function getAction (key) {
   if (!actions[key]) {
     throw new Error(`Attempting to get an action that does not exist (${key}).`)
   }
-  return actions[key][0]
+  const action = actions[key][0]
+  return action
+}
+
+function asyncAction (dispatch, getState) {
+  function doSomething () {
+    console.log('state from asyncAction = ', getState())
+    dispatch({ type: 'FROM_THUNK' })
+  }
+  setTimeout(doSomething, 5000)
 }
 
 const tickFn = () => rootSubject.next(getAction(actionKeys.INC_COUNTER_TIMER)())
+const asyncFn = () => rootSubject.next(asyncAction)
 
 const rootSubject = new Rx.Subject()
 
@@ -92,12 +113,22 @@ const subscriber = {
   }
 }
 
+function setGlobalSubjectState (state) {
+  globalSubjectState = state
+}
+
+function _getState () {
+  return globalSubjectState
+}
+
 rootSubject
   .startWith(initialState)
   .scan(reducer)
+  .do(setGlobalSubjectState)
   .subscribe(subscriber)
 
 setInterval(tickFn, 1000)
+setTimeout(asyncFn, 500)
 
 render(initialState)
 
