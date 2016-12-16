@@ -1,0 +1,70 @@
+{
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "blockBindings": true,
+    "defaultParameters": true,
+    "forOf": true,
+    "jsx": true,
+    "modules": true,
+    "objectLiteralComputedProperties": true,
+    "objectLiteralDuplicateProperties": true,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "templateStrings": true
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "mocha": true,
+    "jest": true,
+    "jquery": true
+  },
+  "parser": "babel-eslint",
+  "plugins": [
+    "import",
+    "react"
+  ],
+  "extends": ["standard", "standard-react"],
+
+  "comment": "NB avoid adding rules that conflict with standard",
+  "rules": {
+    "camelcase":0,
+    "consistent-return":0,
+    "dot-notation":0,
+    "no-unused-vars":1,
+    "quotes": 0,
+    "space-in-parens": 0,
+    "jsx-quotes": 0,
+    "react/prop-types": 0,
+    "space-infix-ops": 0,
+    "arrow-parens": 0,
+
+    "import/export": 2,
+    "import/no-unresolved": [2, {}],
+    "import/named": 2,
+    "import/namespace": 2,
+    "import/no-duplicates": 2,
+
+    "key-spacing": [2, {"beforeColon": false,
+                        "afterColon": true,
+                        "mode": "minimum"}],
+    "no-alert":0,
+    "no-empty":1,
+    "no-multi-spaces": 0,
+    "no-multiple-empty-lines": [2, {"max": 2}],
+    "no-process-exit":0,
+    "no-shadow":0,
+    "no-underscore-dangle":0,
+    "no-use-before-define":0,
+
+    "react/display-name": [2, { "ignoreTranspilerName": false }],
+    "react/no-did-mount-set-state": 2,
+    "react/wrap-multilines": 2,
+    "strict": 0
+  },
+
+  "settings": {
+    "import/parser": "babel-eslint"
+  }
+}

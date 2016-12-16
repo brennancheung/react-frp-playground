@@ -1,0 +1,13 @@
+rpmbuild/
+build/*
+dist/*
+._*
+.DS_Store
+.idea
+node_modules/
+npm-debug.log
+config.yml
+.*.swp
+.*.swo
+src/features-override.json
+content/*
