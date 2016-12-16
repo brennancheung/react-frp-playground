@@ -16,7 +16,6 @@ const initialState = {
 }
 
 const render = (state=initialState) => {
-  console.log('rendering app with state = ', state)
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
@@ -28,6 +27,16 @@ const render = (state=initialState) => {
 }
 
 
+// additionalReducers allow you to specify additional reduce operations
+const additionalReducers = {
+  INC_COUNTER_TIMER: [
+    (state, payload) => {
+      // do additional stuff for INC_COUNTER_TIMER
+      return { ...state, additional: 'here I am' }
+    }
+  ]
+}
+
 export const actions = {
   INC_COUNTER_TIMER: [
     () => ({ type: 'INC_COUNTER_TIMER' }),
@@ -38,7 +47,7 @@ export const actions = {
 
   NOOP: [
     () => ({ type: 'NOOP' }),
-    (state, payload) => state
+    (state, payload) => ({ ...state })
   ]
 }
 
@@ -47,7 +56,13 @@ const reducer = (state, action) => {
   if (!actions[type]) {
     return state
   }
-  return actions[type][1](state, payload)
+
+  let reducers = []
+  reducers.push(actions[type][1])
+
+  const additional = additionalReducers[type] || []
+
+  return reducers.concat(additional).reduce((_state, _reducer) => _reducer(_state, payload), state)
 }
 
 function mirrorKeys (obj) {
